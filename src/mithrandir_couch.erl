@@ -5,6 +5,7 @@
 -export([db/1]).
 -export([save_doc/2]).
 -export([db_exists/1]).
+-export([delete_db/1]).
 
 server() ->
     couchbeam:server_connection("localhost", 5984, "", []).
@@ -23,3 +24,7 @@ save_doc(Db, Doc) ->
 %% @doc check if a db exists
 db_exists(DbName) ->
     couchbeam:db_exists(server(), DbName).
+
+%% @doc delete a db
+delete_db(DbName) ->
+    couchbeam:delete_db(server(), DbName).

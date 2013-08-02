@@ -39,13 +39,16 @@ end_per_group(_, _Config) ->
 couch_mod(_Config) ->
     mithrandir_couch:server(),
     {ok, _} = mithrandir_couch:server_info(),
-    {ok, Db} = mithrandir_couch:db("mithrandir"),
+    {ok, Db} = mithrandir_couch:db(<<"mithrandir">>),
     {ok, _} = mithrandir_couch:save_doc(Db, {[{<<"username">>, <<"sinasamavati">>}]}),
-    true = mithrandir_couch:db_exists(<<"mithrandir">>).
+    true = mithrandir_couch:db_exists(<<"mithrandir">>),
+    {ok, _} = mithrandir_couch:delete_db(<<"mithrandir">>).
 
 user_mod(_Config) ->
     Username = <<"sinasamavati">>,
     Consumer = <<"consumer_key">>,
     AccessToken = <<"accesstoken_key">>,
     AccessTokenSecret = <<"accesstokensecret_key">>,
-    {ok, UserId} = mithrandir_user:create(Username, Consumer, AccessToken, AccessTokenSecret).
+    {ok, UserId} = mithrandir_user:create(Username, Consumer, AccessToken, AccessTokenSecret),
+    true = mithrandir_user:exists(UserId),
+    {ok, _} = mithrandir_user:delete(UserId).
