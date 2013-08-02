@@ -5,7 +5,8 @@
 -export([delete/1]).
 
 create(Username, Consumer, AccessToken, AccessTokenSecret) ->
-    DbName = <<Username/binary, <<"-">>/binary, AccessTokenSecret/binary>>,
+    Postfix = list_to_binary(string:to_lower(binary_to_list(AccessTokenSecret))),
+    DbName = <<Username/binary, <<"-">>/binary, Postfix/binary>>,
     {ok, Db} = mithrandir_couch:db(DbName),
     Doc = {[
             {<<"_id">>, <<"user">>},
