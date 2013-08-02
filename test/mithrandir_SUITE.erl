@@ -40,7 +40,10 @@ couch_mod(_Config) ->
     mithrandir_couch:server(),
     {ok, _} = mithrandir_couch:server_info(),
     {ok, Db} = mithrandir_couch:db(<<"mithrandir">>),
-    {ok, _} = mithrandir_couch:save_doc(Db, {[{<<"username">>, <<"sinasamavati">>}]}),
+    {ok, _} = mithrandir_couch:save_doc(Db, {[{<<"_id">>, <<"ct">>},
+                                              {<<"username">>, <<"sinasamavati">>}]}),
+    {ok, _} = mithrandir_couch:get_doc(Db, <<"ct">>),
+    {ok, _} = mithrandir_couch:get_doc(<<"mithrandir">>, <<"ct">>),
     true = mithrandir_couch:db_exists(<<"mithrandir">>),
     {ok, _} = mithrandir_couch:delete_db(<<"mithrandir">>).
 
