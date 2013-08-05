@@ -20,6 +20,8 @@ update(UserId) ->
     {ok, {_, _, Res}} = fetch(UserId),
     Docs = couchbeam_ejson:decode(Res),
     lists:foreach(fun(Doc) ->
-                          mithrandir_couch:save_doc(UserId, Doc)
+                          Id = couchbeam_doc:get_value(<<"id_str">>, Doc),
+                          Doc1 = couchbeam_doc:set_value(<<"_id">>, Id, Doc),
+                          mithrandir_couch:save_doc(UserId, Doc1)
                   end,
                   Docs).
