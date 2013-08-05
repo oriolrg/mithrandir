@@ -19,7 +19,10 @@ db(DbName) ->
     couchbeam:open_or_create_db(server(), DbName, []).
 
 %% @doc save a document
-save_doc(Db, Doc) ->
+save_doc(Db, Doc) when is_tuple(Db) ->
+    couchbeam:save_doc(Db, Doc);
+save_doc(DbName, Doc) ->
+    {ok, Db} = couchbeam:open_db(server(), DbName),
     couchbeam:save_doc(Db, Doc).
 
 %% @doc get a document by id

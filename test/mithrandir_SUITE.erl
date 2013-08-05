@@ -55,6 +55,9 @@ couch_mod(_Config) ->
     {ok, Db} = mithrandir_couch:db(<<"mithrandir">>),
     {ok, _} = mithrandir_couch:save_doc(Db, {[{<<"_id">>, <<"ct">>},
                                               {<<"username">>, <<"sinasamavati">>}]}),
+    %% save a doc with having the db name
+    {ok, _} = mithrandir_couch:save_doc(<<"mithrandir">>, {[{<<"_id">>, <<"ct1">>},
+                                                            {<<"name">>, <<"sina">>}]}),
     {ok, _} = mithrandir_couch:get_doc(Db, <<"ct">>),
     {ok, _} = mithrandir_couch:get_doc(<<"mithrandir">>, <<"ct">>),
     true = mithrandir_couch:db_exists(<<"mithrandir">>),
