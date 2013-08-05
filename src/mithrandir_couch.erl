@@ -15,6 +15,7 @@ server_info() ->
     couchbeam:server_info(server()).
 
 %% @doc open or create a db
+%% @spec db(DbName::bitstring()) -> {ok, tuple()} | {error, tuple()}
 db(DbName) ->
     couchbeam:open_or_create_db(server(), DbName, []).
 
@@ -33,9 +34,11 @@ get_doc(DbName, Id) ->
     couchbeam:open_doc(Db, Id).
 
 %% @doc check if a db exists
+%% @spec db_exists(DbName) -> boolean()
 db_exists(DbName) ->
     couchbeam:db_exists(server(), DbName).
 
 %% @doc delete a db
+%% @spec delete_db(DbName::bitstring()) -> {ok, tuple()} | {error, tuple()}
 delete_db(DbName) ->
     couchbeam:delete_db(server(), DbName).
