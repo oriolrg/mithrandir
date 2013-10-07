@@ -1,4 +1,4 @@
--module(mithrandir_couch).
+-module(mcouch).
 
 -export([server/0]).
 -export([server_info/0]).

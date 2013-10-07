@@ -11,7 +11,7 @@ fetch(UserId) ->
     fetch(UserId, []).
 
 fetch(UserId, Params) ->
-    {ok, Doc} = mithrandir_couch:get_doc(UserId, <<"user">>),
+    {ok, Doc} = mcouch:get_doc(UserId, <<"user">>),
     _Consumer = couchbeam_doc:get_value(<<"consumer">>, Doc),
     Consumer = list_to_tuple([binary_to_list(X) || X <- _Consumer] ++ [hmac_sha1]),
     AccessToken = binary_to_list(couchbeam_doc:get_value(<<"accesstoken">>, Doc)),
@@ -20,7 +20,7 @@ fetch(UserId, Params) ->
     oauth:get(URL, Params, Consumer, AccessToken, AccessTokenSecret).
 
 latest(UserId) ->
-    case mithrandir_couch:get_doc(UserId, <<"latest">>) of
+    case mcouch:get_doc(UserId, <<"latest">>) of
         {ok, Doc} ->
             binary_to_list(couchbeam_doc:get_value(<<"tw_id">>, Doc));
         {error, not_found} ->
@@ -39,7 +39,7 @@ update(UserId) ->
     {ok, {_, _, Res}} = fetch(UserId, Params),
     Docs = couchbeam_ejson:decode(Res),
     Newest = hd(Docs),
-    mithrandir_couch:save_doc(UserId,
+    mcouch:save_doc(UserId,
                               {[
                                 {<<"_id">>, <<"latest">>},
                                 {<<"tw_id">>, couchbeam_doc:get_value(<<"id_str">>, Newest)}
@@ -48,6 +48,6 @@ update(UserId) ->
     lists:foreach(fun(Doc) ->
                           Id = couchbeam_doc:get_value(<<"id_str">>, Doc),
                           Doc1 = couchbeam_doc:set_value(<<"_id">>, Id, Doc),
-                          mithrandir_couch:save_doc(UserId, Doc1)
+                          mcouch:save_doc(UserId, Doc1)
                   end,
                   Docs).
