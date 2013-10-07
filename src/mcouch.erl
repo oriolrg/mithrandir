@@ -6,7 +6,7 @@
 -export([save_doc/2]).
 -export([get_doc/2]).
 -export([db_exists/1]).
--export([delete_db/1]).
+-export([del_db/1]).
 
 -include_lib("couchbeam/include/couchbeam.hrl").
 
@@ -45,6 +45,6 @@ db_exists(DbName) ->
     couchbeam:db_exists(server_connection(), DbName).
 
 %% @doc delete a db
--spec delete_db(db_name()) -> {ok, iolist()} | {error, any()}.
-delete_db(DbName) ->
+-spec del_db(db_name()) -> {ok, iolist()} | {error, any()}.
+del_db(DbName) ->
     couchbeam:delete_db(server_connection(), DbName).
