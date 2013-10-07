@@ -1,12 +1,11 @@
 {application, mithrandir,
  [
   {description, ""},
-  {vsn, "1"},
+  {vsn, ""},
   {registered, []},
   {applications, [
                   kernel,
                   stdlib,
-                  cowboy,
                   couchbeam
                  ]},
   {mod, { mithrandir_app, []}},
