@@ -17,7 +17,8 @@ fetch(UserId, Params) ->
     AccessToken = binary_to_list(couchbeam_doc:get_value(<<"accesstoken">>, Doc)),
     AccessTokenSecret = binary_to_list(couchbeam_doc:get_value(<<"accesstokensecret">>, Doc)),
     URL = "https://api.twitter.com/1.1/statuses/home_timeline.json",
-    oauth:get(URL, Params, Consumer, AccessToken, AccessTokenSecret).
+    {ok, {_, _, Res}} = oauth:get(URL, Params, Consumer, AccessToken, AccessTokenSecret),
+    couchbeam_ejson:decode(Res).
 
 latest(UserId) ->
     case mcouch:get_doc(UserId, <<"latest">>) of
@@ -35,8 +36,7 @@ update(UserId) ->
                  SinceId ->
                      [{"since_id", SinceId}]
              end,
-    {ok, {_, _, Res}} = fetch(UserId, Params),
-    Docs = couchbeam_ejson:decode(Res),
+    Docs = fetch(UserId, Params),
     Newest = hd(Docs),
     mcouch:save_doc(UserId,
                     {[
