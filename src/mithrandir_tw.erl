@@ -5,8 +5,8 @@
 -export([update/1]).
 -export([latest/1]).
 
+
 %% @doc fetch an user's timeline
-%% @spec fetch(UserId::bitstring()) -> {ok, tuple()}
 fetch(UserId) ->
     fetch(UserId, []).
 
@@ -28,7 +28,6 @@ latest(UserId) ->
     end.
 
 %% @doc fetch and store to db
-%% @spec update(UserId::bitstring()) -> ok
 update(UserId) ->
     Params = case latest(UserId) of
                  undefined ->
@@ -40,11 +39,11 @@ update(UserId) ->
     Docs = couchbeam_ejson:decode(Res),
     Newest = hd(Docs),
     mcouch:save_doc(UserId,
-                              {[
-                                {<<"_id">>, <<"latest">>},
-                                {<<"tw_id">>, couchbeam_doc:get_value(<<"id_str">>, Newest)}
-                               ]}
-                             ),
+                    {[
+                      {<<"_id">>, <<"latest">>},
+                      {<<"tw_id">>, couchbeam_doc:get_value(<<"id_str">>, Newest)}
+                     ]}
+                   ),
     lists:foreach(fun(Doc) ->
                           Id = couchbeam_doc:get_value(<<"id_str">>, Doc),
                           Doc1 = couchbeam_doc:set_value(<<"_id">>, Id, Doc),
