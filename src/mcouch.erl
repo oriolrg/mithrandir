@@ -7,6 +7,8 @@
 -export([get_doc/2]).
 -export([db_exists/1]).
 -export([del_db/1]).
+-export([get_value/2]).
+-export([get_value/3]).
 
 -include_lib("couchbeam/include/couchbeam.hrl").
 
@@ -48,3 +50,11 @@ db_exists(DbName) ->
 -spec del_db(db_name()) -> {ok, iolist()} | {error, any()}.
 del_db(DbName) ->
     couchbeam:delete_db(server_connection(), DbName).
+
+-spec get_value(binary(), ejson()) -> term() | <<>>.
+get_value(Key, Doc) ->
+    get_value(Key, Doc, <<>>).
+
+-spec get_value(binary(), ejson(), term()) -> term().
+get_value(Key, Doc, Default) ->
+    couchbeam_doc:get_value(Key, Doc, Default).
