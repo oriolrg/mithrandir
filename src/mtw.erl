@@ -1,4 +1,4 @@
--module(mithrandir_tw).
+-module(mtw).
 
 -export([fetch/1]).
 -export([fetch/2]).
