@@ -6,7 +6,7 @@
 -export([latest/1]).
 
 
-%% @doc fetch an user's timeline
+%% @doc fetch user's tweets
 fetch(UserId) ->
     fetch(UserId, []).
 
@@ -16,8 +16,9 @@ fetch(UserId, Params) ->
     Consumer = list_to_tuple([binary_to_list(X) || X <- _Consumer] ++ [hmac_sha1]),
     AccessToken = binary_to_list(mcouch:get_value(<<"accesstoken">>, Doc)),
     AccessTokenSecret = binary_to_list(mcouch:get_value(<<"accesstokensecret">>, Doc)),
-    URL = "https://api.twitter.com/1.1/statuses/home_timeline.json",
-    {ok, {_, _, Res}} = oauth:get(URL, Params, Consumer, AccessToken, AccessTokenSecret),
+    URL = "https://api.twitter.com/1.1/statuses/user_timeline.json",
+    Params2 = Params ++ [{"screen_name", UserId}],
+    {ok, {_, _, Res}} = oauth:get(URL, Params2, Consumer, AccessToken, AccessTokenSecret),
     couchbeam_ejson:decode(Res).
 
 latest(UserId) ->
