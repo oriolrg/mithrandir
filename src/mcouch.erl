@@ -11,6 +11,7 @@
 
 -export([start_link/0]).
 -export([start_link/1]).
+-export([stop/0]).
 -export([upgrade/0]).
 
 -include_lib("couchbeam/include/couchbeam.hrl").
@@ -48,17 +49,25 @@ start_link() ->
 start_link(Conn) ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, Conn, []).
 
+-spec stop() -> ok.
+stop() ->
+    gen_server:call(?MODULE, terminate).
 
 %% gen_server
 init([]) ->
     State = couchbeam:server_connection(),
     {ok, State};
-init({Host, Port, Prefix, Options}) ->
-    State = couchbeam:server_connection(Host, Port, Prefix, Options),
+init(Conn) ->
+    State = case Conn of
+                {Host, Port} ->
+                    couchbeam:server_connection(Host, Port, "", []);
+                {Host, Port, Prefix} ->
+                    couchbeam:server_connection(Host, Port, Prefix, []);
+                {Host, Port, Prefix, Options} ->
+                    couchbeam:server_connection(Host, Port, Prefix, Options)
+            end,
     {ok, State}.
 
-handle_call(state, _From, State) ->
-    {reply, State, State};
 handle_call(terminate, _From, State) ->
     {stop, normal, ok, State}.
 
@@ -77,7 +86,12 @@ code_change(_OldVsn, State, _Extra) ->
 
 %% don't try it at home
 upgrade() ->
-    {ok, Vsn} = application:get_key(?MODULE, vsn),
+    Vsn = case application:get_key(mithrandir, vsn) of
+              {ok, Value} ->
+                  Value;
+              _ ->
+                  0
+          end,
     sys:suspend(?MODULE),
     code:purge(?MODULE),
     code:load_file(?MODULE),
